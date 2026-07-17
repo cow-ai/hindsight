@@ -1,0 +1,83 @@
+name: Cow Memory immutable image
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - cow-memory/**
+    paths:
+      - cow-memory/**
+      - docker/standalone/**
+      - hindsight-api-slim/**
+      - uv.lock
+      - .github/workflows/cow-memory-image.yml
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+concurrency:
+  group: cow-memory-image-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Configure official upstream
+        run: git remote add upstream https://github.com/vectorize-io/hindsight.git
+      - name: Verify fork provenance
+        run: cow-memory/check-fork.sh
+      - name: Generate source SPDX SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: spdx-json
+          output-file: cow-memory.spdx.json
+      - name: Upload SBOM and license evidence
+        uses: actions/upload-artifact@v7
+        with:
+          name: cow-memory-supply-chain-${{ github.sha }}
+          path: |
+            cow-memory.spdx.json
+            LICENSE
+            NOTICE.cow-memory
+            cow-memory/provenance.json
+          retention-days: 90
+
+  build:
+    needs: verify
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and publish exact-SHA image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/standalone/Dockerfile
+          target: api-only
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ghcr.io/cow-ai/hindsight-cow-memory:sha-${{ github.sha }}
+          build-args: |
+            INCLUDE_API=true
+            INCLUDE_CP=false
+            INCLUDE_LOCAL_MODELS=true
+            PRELOAD_ML_MODELS=true
+          labels: |
+            org.opencontainers.image.source=https://github.com/cow-ai/hindsight
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.licenses=MIT
+          sbom: true
+          provenance: mode=max

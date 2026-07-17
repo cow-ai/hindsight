@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "upstream_repository": "https://github.com/vectorize-io/hindsight.git",
+  "upstream_release": "v0.8.4",
+  "upstream_base": "92f433c90409636804c0797071a4abbe141f76c5",
+  "cow_repository": "https://github.com/cow-ai/hindsight.git",
+  "license": "MIT",
+  "schema": {
+    "heads": ["b57a7c9e0d13"],
+    "migration_count": 84,
+    "tree_sha256": "6eddc42c93d9b5408b408439e515902fae2ed4b990493a2e7c1b19c638028c15"
+  },
+  "image": {
+    "dockerfile": "docker/standalone/Dockerfile",
+    "target": "api-only",
+    "platforms": ["linux/amd64", "linux/arm64"],
+    "registry": "ghcr.io/cow-ai/hindsight-cow-memory",
+    "mutable_latest_forbidden": true,
+    "sbom_required": true,
+    "provenance_required": true
+  }
+}

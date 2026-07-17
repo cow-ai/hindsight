@@ -1,0 +1,11 @@
+Cow Memory Hindsight image
+
+This distribution is built from the Cow-owned fork of vectorize-io/hindsight.
+Upstream source is licensed under the MIT License; the complete upstream license
+is preserved in LICENSE. Cow-specific build policy and verification files are
+also distributed under the repository's MIT License.
+
+The exact upstream base, Cow commit, dependency SBOM, build provenance, target
+platforms, and image digest are release artifacts. Third-party component
+licenses are represented in the generated SPDX SBOM and must be reviewed before
+an image digest is approved for deployment.
