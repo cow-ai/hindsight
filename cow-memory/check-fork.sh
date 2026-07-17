@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd -P)
+cd "$ROOT"
+
 BASE="$(python3 -c 'import json; print(json.load(open("cow-memory/provenance.json"))["upstream_base"])')"
 EXPECTED_ORIGIN='https://github.com/cow-ai/hindsight.git'
 EXPECTED_UPSTREAM='https://github.com/vectorize-io/hindsight.git'
