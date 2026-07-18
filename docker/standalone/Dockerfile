@@ -25,7 +25,7 @@ ARG INCLUDE_LOCAL_MODELS=true
 # =============================================================================
 # Stage: API Builder
 # =============================================================================
-FROM python:3.11-slim AS api-builder
+FROM python:3.11-slim@sha256:db3ff2e1800a8581e2c48a27c3995339d47bdf046da21c7627accd3d51053a93 AS api-builder
 
 ARG INCLUDE_API
 ARG INCLUDE_LOCAL_MODELS
@@ -67,7 +67,7 @@ RUN uv pip install -e .
 # =============================================================================
 # Stage: SDK Builder (needed for Control Plane)
 # =============================================================================
-FROM node:20-slim AS sdk-builder
+FROM node:20-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0 AS sdk-builder
 
 ARG INCLUDE_CP
 RUN if [ "$INCLUDE_CP" != "true" ]; then echo "Skipping SDK build" && exit 0; fi
@@ -85,7 +85,7 @@ RUN npm run build -w @vectorize-io/hindsight-client
 # =============================================================================
 # Stage: Control Plane Builder
 # =============================================================================
-FROM node:20-slim AS cp-builder
+FROM node:20-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0 AS cp-builder
 
 ARG INCLUDE_CP
 RUN if [ "$INCLUDE_CP" != "true" ]; then echo "Skipping CP build" && exit 0; fi
@@ -140,7 +140,7 @@ RUN STANDALONE_ROOT=$(find .next/standalone -path '*/node_modules' -prune -o -na
 # =============================================================================
 # Stage: Final Image - API Only
 # =============================================================================
-FROM python:3.11-slim AS api-only
+FROM python:3.11-slim@sha256:db3ff2e1800a8581e2c48a27c3995339d47bdf046da21c7627accd3d51053a93 AS api-only
 
 WORKDIR /app
 
@@ -252,7 +252,7 @@ CMD ["/app/start-all.sh"]
 # =============================================================================
 # Stage: Final Image - Control Plane Only
 # =============================================================================
-FROM node:20-alpine AS cp-only
+FROM node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293 AS cp-only
 
 WORKDIR /app
 
@@ -286,7 +286,7 @@ CMD ["/app/start-all.sh"]
 # =============================================================================
 # Stage: Final Image - Standalone (both API and Control Plane)
 # =============================================================================
-FROM python:3.11-slim AS standalone
+FROM python:3.11-slim@sha256:db3ff2e1800a8581e2c48a27c3995339d47bdf046da21c7627accd3d51053a93 AS standalone
 
 WORKDIR /app
 
