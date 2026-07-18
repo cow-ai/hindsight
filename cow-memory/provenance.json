@@ -12,7 +12,7 @@
   },
   "image": {
     "dockerfile": "docker/standalone/Dockerfile",
-    "target": "api-only",
+    "target": "standalone",
     "platforms": ["linux/amd64", "linux/arm64"],
     "registry": "ghcr.io/cow-ai/hindsight-cow-memory",
     "mutable_latest_forbidden": true,
