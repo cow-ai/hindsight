@@ -1098,6 +1098,7 @@ async def test_version_endpoint_returns_correct_version(api_client):
 
     # Verify response structure
     assert "api_version" in result, "Response should include 'api_version' field"
+    assert result["schema_revision"] == "b57a7c9e0d13"
     assert "features" in result, "Response should include 'features' field"
 
     # Verify the version matches the package version

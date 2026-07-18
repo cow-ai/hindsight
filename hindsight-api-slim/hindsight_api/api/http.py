@@ -2844,6 +2844,7 @@ class VersionResponse(BaseModel):
     )
 
     api_version: str = Field(description="API version string")
+    schema_revision: str = Field(description="Exact Alembic migration head shipped by this build")
     features: FeaturesInfo = Field(description="Enabled feature flags")
 
 
@@ -3495,6 +3496,7 @@ def _register_routes(app: FastAPI):
         config = _get_raw_config()
         return VersionResponse(
             api_version=__version__,
+            schema_revision="b57a7c9e0d13",
             features=FeaturesInfo(
                 observations=config.enable_observations,
                 mcp=config.mcp_enabled,
